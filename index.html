@@ -3,393 +3,146 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-<title>ZenticMusic — Hear Everything. Own the Sound.</title>
-<meta name="description" content="ZenticMusic is a full-stack audio streaming and marketplace platform. Stream, buy, sell, and manage audio tracks from any device."/>
+<title>ZenticMusic — Full-Stack Audio Streaming & Marketplace Platform</title>
+<meta name="description" content="ZenticMusic is a production-grade full-stack audio platform. Stream, buy, sell, upload and manage audio tracks. Built with Node.js, PostgreSQL, Cloudinary, PWA and Android app."/>
 <meta name="robots" content="noindex, nofollow"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 <style>
-/* ═══════════════════════════════════════
-   RESET + ROOT
-═══════════════════════════════════════ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --brand:#7c3aed;
-  --brand2:#a855f7;
-  --brand-dark:#5b21b6;
-  --pink:#c026d3;
-  --bg:#060514;
-  --bg2:#0c0a1e;
-  --bg3:#120f2a;
-  --card:rgba(255,255,255,.04);
-  --card-hover:rgba(124,58,237,.08);
-  --border:rgba(255,255,255,.07);
-  --border-brand:rgba(124,58,237,.3);
-  --text:#f0eeff;
-  --text2:#a89ec8;
-  --muted:#5e5280;
-  --green:#34d399;
-  --yellow:#fbbf24;
+  --brand:#7c3aed;--brand2:#a855f7;--brand-dark:#5b21b6;
+  --pink:#c026d3;--bg:#060514;--bg2:#0c0a1e;--bg3:#120f2a;
+  --card:rgba(255,255,255,.04);--card-hover:rgba(124,58,237,.08);
+  --border:rgba(255,255,255,.07);--border-brand:rgba(124,58,237,.3);
+  --text:#f0eeff;--text2:#a89ec8;--muted:#5e5280;
+  --green:#34d399;--yellow:#fbbf24;--red:#f87171;--blue:#60a5fa;
   --radius:20px;
 }
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-body{
-  font-family:'Inter',system-ui,sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  overflow-x:hidden;
-  -webkit-font-smoothing:antialiased;
-}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased}
 img{display:block;max-width:100%}
 a{color:inherit;text-decoration:none}
 </style>
+</head>
+<body>
+
 <style>
-/* ═══════════════════════════════════════
-   BACKGROUND MESH
-═══════════════════════════════════════ */
-.bg-mesh{
-  position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
-}
-.bg-mesh::before{
-  content:'';position:absolute;
-  width:900px;height:900px;border-radius:50%;
-  background:radial-gradient(circle,rgba(124,58,237,.22) 0%,transparent 65%);
-  top:-300px;left:-300px;
-  animation:meshDrift1 20s ease-in-out infinite alternate;
-}
-.bg-mesh::after{
-  content:'';position:absolute;
-  width:700px;height:700px;border-radius:50%;
-  background:radial-gradient(circle,rgba(192,38,211,.15) 0%,transparent 65%);
-  bottom:-200px;right:-200px;
-  animation:meshDrift2 24s ease-in-out infinite alternate;
-}
-.bg-mesh-mid{
-  position:fixed;width:500px;height:500px;border-radius:50%;
-  background:radial-gradient(circle,rgba(99,102,241,.12) 0%,transparent 65%);
-  top:40%;left:55%;transform:translate(-50%,-50%);
-  pointer-events:none;z-index:0;
-  animation:meshDrift1 18s ease-in-out infinite alternate-reverse;
-}
+/* BG MESH */
+.bg-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.bg-mesh::before{content:'';position:absolute;width:900px;height:900px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,.22) 0%,transparent 65%);top:-300px;left:-300px;animation:meshDrift1 20s ease-in-out infinite alternate}
+.bg-mesh::after{content:'';position:absolute;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(192,38,211,.15) 0%,transparent 65%);bottom:-200px;right:-200px;animation:meshDrift2 24s ease-in-out infinite alternate}
+.bg-mesh-mid{position:fixed;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,.12) 0%,transparent 65%);top:40%;left:55%;transform:translate(-50%,-50%);pointer-events:none;z-index:0;animation:meshDrift1 18s ease-in-out infinite alternate-reverse}
 @keyframes meshDrift1{from{transform:translate(0,0)}to{transform:translate(50px,40px)}}
 @keyframes meshDrift2{from{transform:translate(0,0)}to{transform:translate(-40px,-30px)}}
+body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");opacity:.35}
 
-/* Noise grain */
-body::before{
-  content:'';position:fixed;inset:0;z-index:1;pointer-events:none;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-  opacity:.4;
-}
-
-/* ═══════════════════════════════════════
-   LAYOUT
-═══════════════════════════════════════ */
+/* LAYOUT */
 .page{position:relative;z-index:2}
 .container{max-width:1080px;margin:0 auto;padding:0 clamp(20px,5vw,60px)}
-.section{padding:clamp(64px,9vw,110px) 0}
+.section{padding:clamp(60px,8vw,100px) 0}
 
-/* ═══════════════════════════════════════
-   NAV
-═══════════════════════════════════════ */
-nav{
-  position:sticky;top:0;z-index:100;
-  background:rgba(6,5,20,.8);
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  border-bottom:1px solid var(--border);
-}
-.nav-inner{
-  max-width:1080px;margin:0 auto;
-  padding:0 clamp(20px,5vw,60px);
-  height:62px;
-  display:flex;align-items:center;justify-content:space-between;gap:16px;
-}
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(6,5,20,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-inner{max-width:1080px;margin:0 auto;padding:0 clamp(20px,5vw,60px);height:62px;display:flex;align-items:center;justify-content:space-between;gap:16px}
 .nav-logo{display:flex;align-items:center;gap:10px}
 .nav-logo-img{width:34px;height:34px;border-radius:10px;object-fit:contain}
 .nav-logo-name{font-size:17px;font-weight:800;letter-spacing:-.4px}
-.nav-logo-name span{
-  background:linear-gradient(135deg,#9333ea,var(--pink));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
-.nav-cta{
-  display:inline-flex;align-items:center;gap:7px;
-  padding:8px 18px;border-radius:10px;
-  background:linear-gradient(135deg,var(--brand),var(--brand2));
-  color:#fff;font-size:13px;font-weight:700;
-  box-shadow:0 2px 14px rgba(124,58,237,.4);
-  transition:all .2s;white-space:nowrap;
-}
+.nav-logo-name span{background:linear-gradient(135deg,#9333ea,var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nav-cta{display:inline-flex;align-items:center;gap:7px;padding:8px 18px;border-radius:10px;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;font-size:13px;font-weight:700;box-shadow:0 2px 14px rgba(124,58,237,.4);transition:all .2s;white-space:nowrap}
 .nav-cta:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(124,58,237,.55)}
 .nav-cta svg{width:13px;height:13px;flex-shrink:0}
 </style>
+
 <style>
-/* ═══════════════════════════════════════
-   HERO
-═══════════════════════════════════════ */
-.hero{
-  min-height:calc(100dvh - 62px);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center;
-  padding:clamp(56px,9vw,100px) clamp(20px,5vw,60px) clamp(48px,7vw,80px);
-}
-.hero-badge{
-  display:inline-flex;align-items:center;gap:8px;
-  padding:6px 16px 6px 10px;border-radius:100px;
-  background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.28);
-  font-size:11.5px;font-weight:700;color:#c4b5fd;
-  letter-spacing:.6px;text-transform:uppercase;
-  margin-bottom:28px;
-}
-.hero-badge-dot{
-  width:7px;height:7px;border-radius:50%;
-  background:var(--green);
-  box-shadow:0 0 10px rgba(52,211,153,.9);
-  animation:pulseDot 2.2s ease-in-out infinite;
-}
-@keyframes pulseDot{
-  0%,100%{box-shadow:0 0 6px rgba(52,211,153,.8)}
-  50%{box-shadow:0 0 16px rgba(52,211,153,1),0 0 32px rgba(52,211,153,.4)}
-}
-.hero-h1{
-  font-size:clamp(42px,8vw,96px);
-  font-weight:900;
-  letter-spacing:-3px;
-  line-height:.98;
-  margin-bottom:10px;
-}
-.hero-h1-sub{
-  font-size:clamp(28px,5vw,56px);
-  font-weight:900;
-  letter-spacing:-2px;
-  line-height:1.1;
-  color:var(--text2);
-  margin-bottom:28px;
-}
-.grad{
-  background:linear-gradient(135deg,#ddd6fe 0%,var(--brand2) 35%,#818cf8 65%,#c4b5fd 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
-.hero-desc{
-  font-size:clamp(15px,2vw,19px);
-  color:var(--text2);
-  max-width:580px;
-  line-height:1.75;
-  margin-bottom:44px;
-  font-weight:400;
-}
-.hero-btns{
-  display:flex;gap:14px;flex-wrap:wrap;justify-content:center;
-  margin-bottom:64px;
-}
-.btn-primary{
-  display:inline-flex;align-items:center;gap:9px;
-  padding:15px 34px;border-radius:14px;
-  background:linear-gradient(135deg,var(--brand),var(--brand2));
-  color:#fff;font-size:15px;font-weight:700;
-  box-shadow:0 3px 20px rgba(124,58,237,.4),inset 0 1px 0 rgba(255,255,255,.15);
-  transition:all .25s;
-}
+/* HERO */
+.hero{min-height:calc(100dvh - 62px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:clamp(56px,9vw,100px) clamp(20px,5vw,60px) clamp(48px,7vw,80px)}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px 6px 10px;border-radius:100px;background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.28);font-size:11.5px;font-weight:700;color:#c4b5fd;letter-spacing:.6px;text-transform:uppercase;margin-bottom:28px}
+.hero-badge-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 10px rgba(52,211,153,.9);animation:pulseDot 2.2s ease-in-out infinite}
+@keyframes pulseDot{0%,100%{box-shadow:0 0 6px rgba(52,211,153,.8)}50%{box-shadow:0 0 16px rgba(52,211,153,1),0 0 32px rgba(52,211,153,.4)}}
+.hero-h1{font-size:clamp(42px,8vw,96px);font-weight:900;letter-spacing:-3px;line-height:.98;margin-bottom:10px}
+.hero-h1-sub{font-size:clamp(26px,4.5vw,52px);font-weight:900;letter-spacing:-2px;line-height:1.1;color:var(--text2);margin-bottom:28px}
+.grad{background:linear-gradient(135deg,#ddd6fe 0%,var(--brand2) 35%,#818cf8 65%,#c4b5fd 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-desc{font-size:clamp(15px,1.8vw,18px);color:var(--text2);max-width:560px;line-height:1.8;margin-bottom:44px;font-weight:400}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-bottom:60px}
+.btn-primary{display:inline-flex;align-items:center;gap:9px;padding:15px 34px;border-radius:14px;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;font-size:15px;font-weight:700;box-shadow:0 3px 20px rgba(124,58,237,.4),inset 0 1px 0 rgba(255,255,255,.15);transition:all .25s}
 .btn-primary:hover{transform:translateY(-2px);box-shadow:0 7px 28px rgba(124,58,237,.55)}
-.btn-secondary{
-  display:inline-flex;align-items:center;gap:9px;
-  padding:15px 34px;border-radius:14px;
-  background:rgba(255,255,255,.06);
-  border:1px solid rgba(255,255,255,.1);
-  color:var(--text);font-size:15px;font-weight:600;
-  backdrop-filter:blur(10px);
-  transition:all .25s;
-}
+.btn-secondary{display:inline-flex;align-items:center;gap:9px;padding:15px 34px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--text);font-size:15px;font-weight:600;backdrop-filter:blur(10px);transition:all .25s}
 .btn-secondary:hover{background:rgba(124,58,237,.1);border-color:var(--border-brand);color:#e9d5ff;transform:translateY(-2px)}
 .btn-primary svg,.btn-secondary svg{width:16px;height:16px;flex-shrink:0}
-
-/* Hero stat bar */
-.hero-stats{
-  display:inline-flex;align-items:stretch;
-  background:rgba(255,255,255,.04);
-  border:1px solid var(--border);
-  border-radius:100px;
-  backdrop-filter:blur(16px);
-  overflow:hidden;
-}
-.hero-stat{
-  padding:12px 28px;
-  display:flex;flex-direction:column;align-items:center;
-  border-right:1px solid var(--border);
-}
+.hero-stats{display:inline-flex;align-items:stretch;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:100px;backdrop-filter:blur(16px);overflow:hidden}
+.hero-stat{padding:12px 22px;display:flex;flex-direction:column;align-items:center;border-right:1px solid var(--border)}
 .hero-stat:last-child{border-right:none}
-.hero-stat-n{font-size:17px;font-weight:900;color:#c4b5fd;letter-spacing:-.5px;line-height:1.2}
+.hero-stat-n{font-size:16px;font-weight:900;color:#c4b5fd;letter-spacing:-.5px;line-height:1.2}
 .hero-stat-l{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-top:2px}
 </style>
+
 <style>
-/* ═══════════════════════════════════════
-   SECTION LABELS + TITLES
-═══════════════════════════════════════ */
-.sec-tag{
-  display:inline-flex;align-items:center;gap:7px;
-  padding:5px 14px;border-radius:100px;
-  background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.2);
-  font-size:11px;font-weight:700;color:#c4b5fd;
-  letter-spacing:1.1px;text-transform:uppercase;
-  margin-bottom:16px;
-}
+/* SECTION SHARED */
+.sec-tag{display:inline-flex;align-items:center;gap:7px;padding:5px 14px;border-radius:100px;background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.2);font-size:11px;font-weight:700;color:#c4b5fd;letter-spacing:1.1px;text-transform:uppercase;margin-bottom:16px}
 .sec-tag svg{width:11px;height:11px}
-.sec-h2{
-  font-size:clamp(28px,4vw,44px);
-  font-weight:800;letter-spacing:-1.2px;
-  line-height:1.1;margin-bottom:14px;
-}
-.sec-p{
-  font-size:16px;color:var(--text2);
-  max-width:520px;line-height:1.75;
-  margin-bottom:48px;
-}
+.sec-h2{font-size:clamp(28px,4vw,44px);font-weight:800;letter-spacing:-1.2px;line-height:1.1;margin-bottom:14px}
+.sec-p{font-size:16px;color:var(--text2);max-width:520px;line-height:1.75;margin-bottom:48px}
+.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(124,58,237,.25),transparent)}
 
-/* ═══════════════════════════════════════
-   DIVIDER
-═══════════════════════════════════════ */
-.divider{
-  height:1px;
-  background:linear-gradient(90deg,transparent,rgba(124,58,237,.25),transparent);
-  margin:0;
-}
-
-/* ═══════════════════════════════════════
-   FEATURE BENTO GRID
-═══════════════════════════════════════ */
-.bento{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  grid-template-rows:auto;
-  gap:16px;
-}
-.bento-card{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  padding:28px 26px;
-  position:relative;overflow:hidden;
-  transition:border-color .25s,background .25s,transform .25s;
-}
-.bento-card::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(124,58,237,.45),transparent);
-  opacity:0;transition:opacity .25s;
-}
-.bento-card:hover{
-  border-color:var(--border-brand);
-  background:var(--card-hover);
-  transform:translateY(-4px);
-}
+/* BENTO GRID */
+.bento{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.bento-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:28px 26px;position:relative;overflow:hidden;transition:border-color .25s,background .25s,transform .25s}
+.bento-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(124,58,237,.45),transparent);opacity:0;transition:opacity .25s}
+.bento-card:hover{border-color:var(--border-brand);background:var(--card-hover);transform:translateY(-4px)}
 .bento-card:hover::before{opacity:1}
 .bento-wide{grid-column:span 2}
-.bento-tall{grid-row:span 2}
-.bc-icon{
-  width:48px;height:48px;border-radius:14px;
-  background:linear-gradient(135deg,rgba(124,58,237,.3),rgba(168,85,247,.18));
-  border:1px solid rgba(124,58,237,.28);
-  display:grid;place-items:center;
-  margin-bottom:20px;flex-shrink:0;
-}
+.bc-icon{width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,rgba(124,58,237,.3),rgba(168,85,247,.18));border:1px solid rgba(124,58,237,.28);display:grid;place-items:center;margin-bottom:20px}
 .bc-icon svg{width:20px;height:20px;color:#c4b5fd}
 .bc-title{font-size:16px;font-weight:700;margin-bottom:8px;letter-spacing:-.3px}
 .bc-desc{font-size:13.5px;color:var(--text2);line-height:1.7}
-.bc-tag{
-  display:inline-block;margin-top:14px;
-  padding:4px 10px;border-radius:7px;
-  background:rgba(124,58,237,.15);
-  font-size:11px;font-weight:700;color:#c4b5fd;letter-spacing:.4px;
-}
+.bc-tag{display:inline-block;margin-top:12px;padding:4px 10px;border-radius:7px;background:rgba(124,58,237,.15);font-size:11px;font-weight:700;color:#c4b5fd;letter-spacing:.4px}
+.bc-tag-green{background:rgba(52,211,153,.12);color:#34d399}
+.bc-tag-yellow{background:rgba(251,191,36,.12);color:#fbbf24}
 
-/* ═══════════════════════════════════════
-   TECH GRID
-═══════════════════════════════════════ */
-.tech-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
-  gap:10px;
-}
-.tech-card{
-  display:flex;align-items:center;gap:11px;
-  padding:14px 16px;border-radius:14px;
-  background:var(--card);border:1px solid var(--border);
-  transition:all .2s;
-}
-.tech-card:hover{background:rgba(124,58,237,.08);border-color:var(--border-brand);transform:translateY(-2px)}
-.tech-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
-.tech-info-name{font-size:13px;font-weight:600;color:var(--text)}
-.tech-info-role{font-size:11px;color:var(--muted);margin-top:1px}
+/* LIST CARDS */
+.list-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.list-card{display:flex;align-items:center;gap:11px;padding:14px 16px;border-radius:14px;background:var(--card);border:1px solid var(--border);transition:all .2s}
+.list-card:hover{background:rgba(124,58,237,.08);border-color:var(--border-brand);transform:translateY(-2px)}
+.list-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.list-name{font-size:13px;font-weight:600;color:var(--text)}
+.list-role{font-size:11px;color:var(--muted);margin-top:1px}
+</style>
 
-/* ═══════════════════════════════════════
-   PAYMENT SECTION
-═══════════════════════════════════════ */
-.pay-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(175px,1fr));
-  gap:10px;
-}
-.pay-card{
-  display:flex;align-items:center;gap:10px;
-  padding:13px 16px;border-radius:14px;
-  background:var(--card);border:1px solid var(--border);
-  transition:all .2s;
-}
+<style>
+/* CATEGORY CHIPS */
+.cat-row{display:flex;flex-wrap:wrap;gap:10px}
+.cat-chip{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:100px;background:var(--card);border:1px solid var(--border);font-size:13.5px;font-weight:600;color:var(--text2);transition:all .22s;cursor:default}
+.cat-chip:hover{background:linear-gradient(135deg,rgba(124,58,237,.18),rgba(168,85,247,.1));border-color:var(--border-brand);color:#e9d5ff;transform:translateY(-2px);box-shadow:0 8px 24px rgba(124,58,237,.18)}
+.cat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+/* DB TABLE */
+.db-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:10px}
+.db-card{padding:16px 18px;border-radius:14px;background:var(--card);border:1px solid var(--border);transition:all .2s}
+.db-card:hover{border-color:var(--border-brand);background:rgba(124,58,237,.06)}
+.db-card-num{font-size:11px;color:var(--muted);font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:5px}
+.db-card-name{font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px}
+.db-card-desc{font-size:11.5px;color:var(--muted);line-height:1.5}
+
+/* PAYMENT CARDS */
+.pay-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:10px}
+.pay-card{display:flex;align-items:center;gap:10px;padding:13px 16px;border-radius:14px;background:var(--card);border:1px solid var(--border);transition:all .2s}
 .pay-card:hover{background:rgba(124,58,237,.08);border-color:var(--border-brand);transform:translateY(-2px)}
 .pay-flag{font-size:18px;line-height:1;flex-shrink:0}
 .pay-name{font-size:13px;font-weight:600;color:var(--text)}
 .pay-country{font-size:11px;color:var(--muted);margin-top:1px}
 
-/* ═══════════════════════════════════════
-   CATEGORY CHIPS
-═══════════════════════════════════════ */
-.cat-row{display:flex;flex-wrap:wrap;gap:10px}
-.cat-chip{
-  display:inline-flex;align-items:center;gap:8px;
-  padding:10px 20px;border-radius:100px;
-  background:var(--card);border:1px solid var(--border);
-  font-size:13.5px;font-weight:600;color:var(--text2);
-  transition:all .22s;cursor:default;
-}
-.cat-chip:hover{
-  background:linear-gradient(135deg,rgba(124,58,237,.18),rgba(168,85,247,.1));
-  border-color:var(--border-brand);color:#e9d5ff;
-  transform:translateY(-2px);box-shadow:0 8px 24px rgba(124,58,237,.18);
-}
-.cat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-
-/* ═══════════════════════════════════════
-   CTA BANNER
-═══════════════════════════════════════ */
-.cta-banner{
-  border-radius:28px;
-  background:linear-gradient(135deg,rgba(124,58,237,.18) 0%,rgba(168,85,247,.1) 50%,rgba(192,38,211,.12) 100%);
-  border:1px solid rgba(124,58,237,.25);
-  padding:clamp(40px,6vw,72px) clamp(28px,5vw,64px);
-  text-align:center;
-  position:relative;overflow:hidden;
-}
-.cta-banner::before{
-  content:'';position:absolute;
-  width:500px;height:500px;border-radius:50%;
-  background:radial-gradient(circle,rgba(124,58,237,.2),transparent 65%);
-  top:-200px;left:50%;transform:translateX(-50%);
-  pointer-events:none;
-}
+/* CTA BANNER */
+.cta-banner{border-radius:28px;background:linear-gradient(135deg,rgba(124,58,237,.18) 0%,rgba(168,85,247,.1) 50%,rgba(192,38,211,.12) 100%);border:1px solid rgba(124,58,237,.25);padding:clamp(40px,6vw,72px) clamp(28px,5vw,64px);text-align:center;position:relative;overflow:hidden}
+.cta-banner::before{content:'';position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,.2),transparent 65%);top:-200px;left:50%;transform:translateX(-50%);pointer-events:none}
 .cta-banner h2{font-size:clamp(26px,4vw,42px);font-weight:900;letter-spacing:-1px;margin-bottom:14px;position:relative;z-index:1}
-.cta-banner p{font-size:16px;color:var(--text2);max-width:460px;margin:0 auto 32px;line-height:1.7;position:relative;z-index:1}
+.cta-banner p{font-size:16px;color:var(--text2);max-width:480px;margin:0 auto 32px;line-height:1.7;position:relative;z-index:1}
 .cta-banner-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1}
 
-/* ═══════════════════════════════════════
-   FOOTER
-═══════════════════════════════════════ */
-.site-footer{
-  border-top:1px solid var(--border);
-  padding:clamp(28px,4vw,44px) clamp(20px,5vw,60px);
-}
-.footer-inner{
-  max-width:1080px;margin:0 auto;
-  display:flex;align-items:center;justify-content:space-between;
-  flex-wrap:wrap;gap:16px;
-}
+/* FOOTER */
+.site-footer{border-top:1px solid var(--border);padding:clamp(28px,4vw,44px) clamp(20px,5vw,60px)}
+.footer-inner{max-width:1080px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
 .footer-logo{display:flex;align-items:center;gap:9px}
 .footer-logo-img{width:32px;height:32px;border-radius:9px;object-fit:contain}
 .footer-logo-name{font-size:15px;font-weight:800;letter-spacing:-.3px}
@@ -399,37 +152,30 @@ nav{
 .footer-links a{font-size:13px;color:var(--muted);transition:color .18s}
 .footer-links a:hover{color:#c4b5fd}
 
-/* ═══════════════════════════════════════
-   RESPONSIVE
-═══════════════════════════════════════ */
-@media(max-width:860px){
-  .bento{grid-template-columns:repeat(2,1fr)}
-  .bento-wide{grid-column:span 1}
-  .bento-tall{grid-row:span 1}
-}
+/* RESPONSIVE */
+@media(max-width:860px){.bento{grid-template-columns:repeat(2,1fr)}.bento-wide{grid-column:span 1}}
 @media(max-width:600px){
   .bento{grid-template-columns:1fr}
   .hero-stats{flex-direction:column;border-radius:18px;width:100%}
   .hero-stat{border-right:none;border-bottom:1px solid var(--border)}
   .hero-stat:last-child{border-bottom:none}
-  .tech-grid{grid-template-columns:repeat(2,1fr)}
   .footer-inner{flex-direction:column;align-items:flex-start;gap:12px}
   .footer-links{display:none}
   .hero-btns{flex-direction:column;align-items:center}
   .btn-primary,.btn-secondary{width:100%;max-width:280px;justify-content:center}
+  .db-grid{grid-template-columns:repeat(2,1fr)}
 }
-@media(max-width:400px){
-  .hero-stats{display:none}
-}
+@media(max-width:400px){.hero-stats{display:none}}
 </style>
 
-<!-- ══ BG ══ -->
+
+<!-- BG -->
 <div class="bg-mesh"></div>
 <div class="bg-mesh-mid"></div>
 
 <div class="page">
 
-<!-- ══ NAV ══ -->
+<!-- NAV -->
 <nav>
   <div class="nav-inner">
     <a class="nav-logo" href="https://zenticmusic.up.railway.app/" target="_blank" rel="noopener">
@@ -443,121 +189,105 @@ nav{
   </div>
 </nav>
 
-<!-- ══ HERO ══ -->
+<!-- HERO -->
 <section class="hero">
   <div class="hero-badge">
     <span class="hero-badge-dot"></span>
-    Audio Streaming &amp; Marketplace
+    Full-Stack Audio Platform · Production Ready
   </div>
 
-  <h1 class="hero-h1"><span class="grad">Hear Everything.</span></h1>
-  <p class="hero-h1-sub">Own the Sound.</p>
+  <h1 class="hero-h1"><span class="grad">ZenticMusic</span></h1>
+  <p class="hero-h1-sub">Stream. Upload. Buy. Sell.</p>
 
   <p class="hero-desc">
-    Stream free audio, buy and sell tracks, and manage your entire audio library — all from one beautiful, fast, installable app.
+    A complete, production-grade audio streaming and marketplace platform. Users can stream free tracks, upload their own audio, buy exclusive content from creators, and manage everything from a beautiful dashboard — on any device.
   </p>
 
   <div class="hero-btns">
     <a class="btn-primary" href="https://zenticmusic.up.railway.app/" target="_blank" rel="noopener">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-      Start Listening Free
+      Open Live App
     </a>
     <a class="btn-secondary" href="https://zenticmusic.up.railway.app/auth" target="_blank" rel="noopener">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      Create Account
+      Create Free Account
     </a>
   </div>
 
   <div class="hero-stats">
-    <div class="hero-stat"><span class="hero-stat-n">PWA</span><span class="hero-stat-l">Installable</span></div>
-    <div class="hero-stat"><span class="hero-stat-n">Free &amp; Paid</span><span class="hero-stat-l">Track Types</span></div>
-    <div class="hero-stat"><span class="hero-stat-n">Global</span><span class="hero-stat-l">Payments</span></div>
-    <div class="hero-stat"><span class="hero-stat-n">5-Band EQ</span><span class="hero-stat-l">Equalizer</span></div>
-    <div class="hero-stat"><span class="hero-stat-n">Android</span><span class="hero-stat-l">App Available</span></div>
+    <div class="hero-stat"><span class="hero-stat-n">18</span><span class="hero-stat-l">DB Tables</span></div>
+    <div class="hero-stat"><span class="hero-stat-n">7</span><span class="hero-stat-l">Categories</span></div>
+    <div class="hero-stat"><span class="hero-stat-n">3</span><span class="hero-stat-l">Track Types</span></div>
+    <div class="hero-stat"><span class="hero-stat-n">PWA</span><span class="hero-stat-l">+ Android</span></div>
+    <div class="hero-stat"><span class="hero-stat-n">8</span><span class="hero-stat-l">Email Templates</span></div>
   </div>
 </section>
 
 <div class="divider"></div>
 
-<!-- ══ FEATURES BENTO ══ -->
+<!-- CORE FEATURES BENTO -->
 <section class="section">
   <div class="container">
     <div class="sec-tag">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-      Features
+      Core Features
     </div>
-    <h2 class="sec-h2">Everything you need<br/><span class="grad">in one place</span></h2>
-    <p class="sec-p">A complete audio platform built for listeners and creators alike.</p>
+    <h2 class="sec-h2">Everything in <span class="grad">one platform</span></h2>
+    <p class="sec-p">Built for both listeners and creators — with a full audio marketplace, real payment flow, and a powerful admin panel.</p>
 
     <div class="bento">
 
-      <!-- Wide: Streaming -->
+      <!-- Audio Player -->
       <div class="bento-card bento-wide">
         <div class="bc-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
         <div class="bc-title">Professional Audio Player</div>
-        <div class="bc-desc">Stream any track with instant playback, smart buffering, crossfade between songs, shuffle &amp; repeat modes, and full Media Session API support for lock-screen controls on every device.</div>
+        <div class="bc-desc">Full-featured audio player with instant streaming, smart buffering, crossfade, shuffle &amp; repeat, playback speed control, and Media Session API for lock-screen controls on every device. A 5-band equalizer with real-time frequency spectrum, reverb, stereo balance, and 12 presets is built right in.</div>
         <span class="bc-tag">Web Audio API</span>
-      </div>
-
-      <!-- Buy & Sell -->
-      <div class="bento-card">
-        <div class="bc-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
-        <div class="bc-title">Buy &amp; Sell Audio</div>
-        <div class="bc-desc">Creators set a price. Buyers pay via local or international methods. You receive payment directly — no middleman.</div>
-        <span class="bc-tag">Marketplace</span>
-      </div>
-
-      <!-- EQ Mixer -->
-      <div class="bento-card">
-        <div class="bc-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg></div>
-        <div class="bc-title">5-Band Equalizer + Mixer</div>
-        <div class="bc-desc">Real-time EQ, reverb, stereo balance, playback speed, 12 presets, and a live frequency spectrum analyzer.</div>
-        <span class="bc-tag">Pro Audio</span>
+        <span class="bc-tag">5-Band EQ</span>
+        <span class="bc-tag">Media Session API</span>
       </div>
 
       <!-- Upload -->
       <div class="bento-card">
         <div class="bc-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
-        <div class="bc-title">Upload in 3 Steps</div>
-        <div class="bc-desc">Drop your audio file, add title, cover art and category, then set Free, Paid or Private — live in seconds.</div>
-        <span class="bc-tag">Creator Tools</span>
+        <div class="bc-title">Upload Audio — Any User</div>
+        <div class="bc-desc">Any registered user can upload MP3, WAV, OGG, M4A, AAC, FLAC (up to 100 MB) with a cover thumbnail. Set visibility as Free, Paid, or Private. Files go directly to Cloudinary with auto folder organization.</div>
+        <span class="bc-tag">100 MB Limit</span>
+        <span class="bc-tag bc-tag-green">Cloudinary Storage</span>
+      </div>
+
+      <!-- 3 Visibility Modes -->
+      <div class="bento-card">
+        <div class="bc-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <div class="bc-title">3 Track Visibility Modes</div>
+        <div class="bc-desc"><b style="color:#34d399">Public</b> — free for everyone. <b style="color:#fbbf24">Paid</b> — visible to all, but audio URL is hidden until purchase is approved. <b style="color:#a78bfa">Private</b> — only visible to the uploader. Per-track access control enforced on every API endpoint.</div>
+        <span class="bc-tag bc-tag-yellow">Access Control</span>
+      </div>
+
+      <!-- Marketplace -->
+      <div class="bento-card">
+        <div class="bc-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
+        <div class="bc-title">Buy &amp; Sell Audio Marketplace</div>
+        <div class="bc-desc">Buyers submit a Transaction ID with their local or international payment. The uploader verifies and approves or rejects. Buyers get instant email + in-app notification on approval. Full dispute system for unresolved issues.</div>
+        <span class="bc-tag bc-tag-yellow">P2P Payments</span>
+      </div>
+
+      <!-- Multi-method Payments -->
+      <div class="bento-card">
+        <div class="bc-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+        <div class="bc-title">Multi-Method Payment Setup</div>
+        <div class="bc-desc">Uploaders can add multiple payment methods — bKash, Nagad, Rocket, UPI, PayPal, Wise, Bank Transfer (IBAN/SWIFT), Crypto (BTC/ETH/USDT), and more. Country auto-detection shows the most relevant options to each buyer.</div>
+        <span class="bc-tag">Global Payments</span>
       </div>
 
       <!-- PWA + Android -->
-      <div class="bento-card">
-        <div class="bc-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
-        <div class="bc-title">PWA + Android App</div>
-        <div class="bc-desc">Install directly from the browser on iOS or Android. A dedicated Android APK is also available for direct install.</div>
-        <span class="bc-tag">Cross-Platform</span>
-      </div>
-
-      <!-- Wide: Search -->
       <div class="bento-card bento-wide">
-        <div class="bc-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
-        <div class="bc-title">Search, Discover &amp; Filter</div>
-        <div class="bc-desc">Find any track or artist instantly. Filter by category — Song, Poetry, Islamic, Kids, Drama, Story, and more. Save favourites and browse your complete listening history.</div>
-        <span class="bc-tag">Discovery</span>
-      </div>
-
-      <!-- Notifications -->
-      <div class="bento-card">
-        <div class="bc-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
-        <div class="bc-title">Real-Time Notifications</div>
-        <div class="bc-desc">In-app bell alerts for payment approvals, rejections, and important updates — always in the loop.</div>
-      </div>
-
-      <!-- Security -->
-      <div class="bento-card">
-        <div class="bc-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-        <div class="bc-title">Secure by Default</div>
-        <div class="bc-desc">HTTPS, HTTP-only JWT cookies, bcrypt passwords, rate limiting, security headers, and per-track access control.</div>
-      </div>
-
-      <!-- Offline -->
-      <div class="bento-card">
-        <div class="bc-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></div>
-        <div class="bc-title">Works Offline</div>
-        <div class="bc-desc">Service Worker caches the app shell for instant startup even without internet. Pull-to-refresh when you're back online.</div>
+        <div class="bc-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
+        <div class="bc-title">PWA + Native Android App</div>
+        <div class="bc-desc">Installable as a PWA directly from the browser on iOS and Android — no app store needed. A dedicated Android APK is also available for direct install. Service Worker caches the app shell for instant startup even offline. Digital Asset Links (assetlinks.json) support for TWA verification.</div>
+        <span class="bc-tag">PWA</span>
+        <span class="bc-tag bc-tag-green">Android APK</span>
+        <span class="bc-tag">Offline Ready</span>
       </div>
 
     </div>
@@ -566,39 +296,199 @@ nav{
 
 <div class="divider"></div>
 
-<!-- ══ CATEGORIES ══ -->
+<!-- AUTH FEATURES -->
+<section class="section">
+  <div class="container">
+    <div class="sec-tag">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Authentication
+    </div>
+    <h2 class="sec-h2">Secure auth, <span class="grad">done right</span></h2>
+    <p class="sec-p">Multiple login methods, timing-safe checks, OTP reset, and Google OAuth — all with httpOnly JWT cookies.</p>
+
+    <div class="bento">
+      <div class="bento-card">
+        <div class="bc-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+        <div class="bc-title">Email / Password + Google OAuth</div>
+        <div class="bc-desc">Register with email/password or sign in with Google (full OAuth 2.0 flow). Auto-detects Gravatar avatars on registration. Timing-safe login prevents user enumeration attacks.</div>
+        <span class="bc-tag bc-tag-green">Google OAuth 2.0</span>
+      </div>
+      <div class="bento-card">
+        <div class="bc-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <div class="bc-title">JWT — 7-Day Sessions</div>
+        <div class="bc-desc">JWT tokens are delivered as httpOnly cookies (CSRF-safe) and as JSON body. Tokens expire after 7 days. Optional auth middleware serves public endpoints while still enriching context for logged-in users.</div>
+        <span class="bc-tag">httpOnly Cookie</span>
+      </div>
+      <div class="bento-card">
+        <div class="bc-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+        <div class="bc-title">OTP Password Reset</div>
+        <div class="bc-desc">6-digit OTP via email (30-minute expiry). Privacy-safe response prevents user enumeration. Expired OTPs auto-cleaned hourly. Full 3-step flow: request → verify → reset.</div>
+        <span class="bc-tag">Resend API</span>
+      </div>
+      <div class="bento-card">
+        <div class="bc-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+        <div class="bc-title">Profile &amp; Avatar Management</div>
+        <div class="bc-desc">Users can update name, change password, upload a custom avatar (auto face-crop to 200×200 via Cloudinary) or clear it. Old Cloudinary assets auto-deleted on replace.</div>
+        <span class="bc-tag">Auto Face-Crop</span>
+      </div>
+      <div class="bento-card">
+        <div class="bc-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+        <div class="bc-title">Country Auto-Detection</div>
+        <div class="bc-desc">Cloudflare CF-IPCountry header (primary) → ip-api.com fallback → DEFAULT. Country code stored per user session and used to show relevant payment methods in the purchase modal.</div>
+        <span class="bc-tag bc-tag-yellow">Smart UX</span>
+      </div>
+      <div class="bento-card">
+        <div class="bc-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <div class="bc-title">Rate Limiting — Tiered</div>
+        <div class="bc-desc">General API: 200 req/15 min. Login: 20 req/15 min. Register: 10 req/15 min. OTP: 5 req/hour. Reset: 10 req/15 min. Per-endpoint limits prevent brute force and abuse.</div>
+        <span class="bc-tag bc-tag-green">DDoS Protection</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- USER DASHBOARD FEATURES -->
+<section class="section">
+  <div class="container">
+    <div class="sec-tag">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      User Dashboard
+    </div>
+    <h2 class="sec-h2">A dashboard for <span class="grad">every action</span></h2>
+    <p class="sec-p">Listeners, creators, and buyers each get a dedicated experience from a single dashboard.</p>
+
+    <div class="bento">
+      <div class="bento-card">
+        <div class="bc-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+        <div class="bc-title">Favourites with Labels</div>
+        <div class="bc-desc">Heart any track to save it. Optionally label each favourite with a custom category. Favourites shown with purchase access already resolved.</div>
+      </div>
+      <div class="bento-card">
+        <div class="bc-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <div class="bc-title">Listening History — 30 Days</div>
+        <div class="bc-desc">Every played track is logged with dedup (5-min window). History auto-cleans after 30 days. Play count increments only on genuine listens.</div>
+      </div>
+      <div class="bento-card">
+        <div class="bc-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+        <div class="bc-title">My Uploads — Creator View</div>
+        <div class="bc-desc">See all your uploaded tracks with play count, download count, and visibility. Edit description, change visibility/price, replace thumbnail, or delete — with Cloudinary cleanup.</div>
+      </div>
+      <div class="bento-card">
+        <div class="bc-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+        <div class="bc-title">Payment Approval Panel</div>
+        <div class="bc-desc">Uploaders see all incoming payments with buyer name, Transaction ID, amount. One-click Approve / Reject / Request Re-submission. Email + in-app notification sent automatically on each action.</div>
+        <span class="bc-tag bc-tag-yellow">Creator Revenue</span>
+      </div>
+      <div class="bento-card">
+        <div class="bc-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
+        <div class="bc-title">My Purchases — Buyer View</div>
+        <div class="bc-desc">Full purchase history with status tracking (pending → approved). Approved tracks unlock download. Dispute option available if access is not granted after payment approval.</div>
+      </div>
+      <div class="bento-card">
+        <div class="bc-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+        <div class="bc-title">In-App Notifications</div>
+        <div class="bc-desc">Real-time bell notification center (last 30). Types include: payment pending, approved, rejected, dispute, comment, comment reply, support reply, admin message, and more.</div>
+        <span class="bc-tag bc-tag-green">30+ Notification Types</span>
+      </div>
+      <div class="bento-card bento-wide">
+        <div class="bc-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        <div class="bc-title">Support Ticket System (TKT-XXXX)</div>
+        <div class="bc-desc">Users can open support tickets with a category, subject, and message. Each ticket gets a unique TKT-XXXX number. Full threaded conversation between user and admin. Email notifications on both sides for every reply. Admin can close/reopen tickets and user gets notified when resolved.</div>
+        <span class="bc-tag">Ticketed Support</span>
+        <span class="bc-tag bc-tag-green">Email Notifications</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ADMIN PANEL -->
+<section class="section">
+  <div class="container">
+    <div class="sec-tag">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Admin Panel
+    </div>
+    <h2 class="sec-h2">Full control with <span class="grad">a powerful admin</span></h2>
+    <p class="sec-p">A dedicated admin dashboard with complete oversight of users, content, payments, reports, comments, and more.</p>
+
+    <div class="bento">
+      <div class="bento-card bento-wide">
+        <div class="bc-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+        <div class="bc-title">Analytics Dashboard</div>
+        <div class="bc-desc">At a glance: total users, total audios, completed purchases, open reports, total revenue, new users in last 7 days, new audios in last 7 days, 6-month upload trend chart, category distribution, top 5 most-played tracks, and latest 5 pending payments.</div>
+        <span class="bc-tag">Real-time Stats</span>
+        <span class="bc-tag bc-tag-green">Revenue Tracking</span>
+      </div>
+      <div class="bento-card">
+        <div class="bc-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <div class="bc-title">User Management</div>
+        <div class="bc-desc">Search, filter by role/status. Full user profile: uploads, purchases, incoming payments, history, favourites, notifications, payment methods. Edit name/email, block/unblock, promote to admin, delete, send notification.</div>
+      </div>
+      <div class="bento-card">
+        <div class="bc-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
+        <div class="bc-title">Audio Management</div>
+        <div class="bc-desc">Search and filter by category, visibility, and status. Edit metadata, toggle featured, change visibility/price, activate/deactivate, delete with Cloudinary cleanup.</div>
+      </div>
+      <div class="bento-card">
+        <div class="bc-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
+        <div class="bc-title">Purchase &amp; Payment Control</div>
+        <div class="bc-desc">View all purchases with filter by status. Admin can manually override status (pending → completed → refunded → failed). Full buyer and uploader details shown.</div>
+        <span class="bc-tag bc-tag-yellow">Financial Override</span>
+      </div>
+      <div class="bento-card">
+        <div class="bc-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+        <div class="bc-title">Reports &amp; Moderation</div>
+        <div class="bc-desc">View all content reports with reason, details, track, and reporter info. Mark as resolved or dismissed. Comments moderation: search and delete any comment.</div>
+      </div>
+      <div class="bento-card">
+        <div class="bc-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <div class="bc-title">Access Logs</div>
+        <div class="bc-desc">Paginated log of every stream, download, and preview with user, audio, IP address, and timestamp. Auto-cleaned after 90 days to prevent DB bloat.</div>
+        <span class="bc-tag bc-tag-green">90-Day Rolling</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CATEGORIES -->
 <section class="section">
   <div class="container">
     <div class="sec-tag">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-      Content
+      Audio Categories
     </div>
-    <h2 class="sec-h2">Audio for <span class="grad">every mood</span></h2>
-    <p class="sec-p">Discover content across a wide range of categories, all in one place.</p>
+    <h2 class="sec-h2">7 built-in categories, <span class="grad">fully customizable</span></h2>
+    <p class="sec-p">Categories 1–7 are fixed and seeded on every boot. Admin can add custom categories, and the "Other" category acts as a protected fallback for orphan tracks.</p>
     <div class="cat-row">
-      <div class="cat-chip"><span class="cat-dot" style="background:#a78bfa"></span> 🎵 Song &amp; Music</div>
-      <div class="cat-chip"><span class="cat-dot" style="background:#34d399"></span> 🪶 Poetry</div>
-      <div class="cat-chip"><span class="cat-dot" style="background:#fbbf24"></span> ☪️ Islamic Audio</div>
-      <div class="cat-chip"><span class="cat-dot" style="background:#60a5fa"></span> 📖 Story</div>
-      <div class="cat-chip"><span class="cat-dot" style="background:#f97316"></span> 🎠 Kids</div>
-      <div class="cat-chip"><span class="cat-dot" style="background:#fb7185"></span> 🎭 Drama</div>
-      <div class="cat-chip"><span class="cat-dot" style="background:#4ade80"></span> 💡 AC/DC/LED</div>
-      <div class="cat-chip"><span class="cat-dot" style="background:#94a3b8"></span> ✨ Other</div>
+      <div class="cat-chip"><span class="cat-dot" style="background:#a78bfa"></span>🎵 Song &amp; Music</div>
+      <div class="cat-chip"><span class="cat-dot" style="background:#34d399"></span>🪶 Poetry</div>
+      <div class="cat-chip"><span class="cat-dot" style="background:#60a5fa"></span>📖 Story</div>
+      <div class="cat-chip"><span class="cat-dot" style="background:#fbbf24"></span>☪️ Islamic Audio</div>
+      <div class="cat-chip"><span class="cat-dot" style="background:#f97316"></span>🎠 Kids</div>
+      <div class="cat-chip"><span class="cat-dot" style="background:#fb7185"></span>🎭 Drama</div>
+      <div class="cat-chip"><span class="cat-dot" style="background:#94a3b8"></span>✨ Other (Fallback)</div>
+      <div class="cat-chip" style="opacity:.6;border-style:dashed"><span class="cat-dot" style="background:#7c3aed"></span>+ Custom Categories</div>
     </div>
   </div>
 </section>
 
 <div class="divider"></div>
 
-<!-- ══ PAYMENTS ══ -->
+<!-- PAYMENT METHODS -->
 <section class="section">
   <div class="container">
     <div class="sec-tag">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
-      Payments
+      Payment Methods
     </div>
-    <h2 class="sec-h2">Pay your way,<br/><span class="grad">anywhere in the world</span></h2>
-    <p class="sec-p">ZenticMusic auto-detects your country and shows the most relevant payment options. Creators receive funds directly.</p>
+    <h2 class="sec-h2">Pay your way, <span class="grad">anywhere in the world</span></h2>
+    <p class="sec-p">Uploaders can add multiple payment accounts. The platform auto-detects the buyer's country and shows the most relevant methods first.</p>
     <div class="pay-grid">
       <div class="pay-card"><span class="pay-flag">🇧🇩</span><div><div class="pay-name">bKash &amp; Nagad</div><div class="pay-country">Bangladesh</div></div></div>
       <div class="pay-card"><span class="pay-flag">🇧🇩</span><div><div class="pay-name">Rocket</div><div class="pay-country">Bangladesh</div></div></div>
@@ -608,46 +498,191 @@ nav{
       <div class="pay-card"><span class="pay-flag">🇵🇭</span><div><div class="pay-name">GCash · Maya</div><div class="pay-country">Philippines</div></div></div>
       <div class="pay-card"><span class="pay-flag">🌍</span><div><div class="pay-name">PayPal</div><div class="pay-country">International</div></div></div>
       <div class="pay-card"><span class="pay-flag">🌍</span><div><div class="pay-name">Wise</div><div class="pay-country">International</div></div></div>
-      <div class="pay-card"><span class="pay-flag">🌍</span><div><div class="pay-name">Crypto</div><div class="pay-country">BTC · ETH · USDT</div></div></div>
       <div class="pay-card"><span class="pay-flag">🌍</span><div><div class="pay-name">Bank Transfer</div><div class="pay-country">IBAN · SWIFT</div></div></div>
+      <div class="pay-card"><span class="pay-flag">🌍</span><div><div class="pay-name">Crypto</div><div class="pay-country">BTC · ETH · USDT</div></div></div>
     </div>
   </div>
 </section>
 
 <div class="divider"></div>
 
-<!-- ══ TECH ══ -->
+<!-- DATABASE -->
+<section class="section">
+  <div class="container">
+    <div class="sec-tag">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+      Database Schema
+    </div>
+    <h2 class="sec-h2">18 tables, <span class="grad">carefully designed</span></h2>
+    <p class="sec-p">PostgreSQL with pg_trgm for fuzzy search, GIN indexes, auto-migrations on startup, and financial records preserved on cascade delete.</p>
+
+    <div class="db-grid">
+      <div class="db-card"><div class="db-card-num">01</div><div class="db-card-name">users</div><div class="db-card-desc">Auth, roles, avatar, country, OAuth provider</div></div>
+      <div class="db-card"><div class="db-card-num">02</div><div class="db-card-name">password_resets</div><div class="db-card-desc">6-digit OTP, expiry, used flag</div></div>
+      <div class="db-card"><div class="db-card-num">03</div><div class="db-card-name">categories</div><div class="db-card-desc">7 seeded + custom, icon, sort_order</div></div>
+      <div class="db-card"><div class="db-card-num">04</div><div class="db-card-name">audios</div><div class="db-card-desc">Title, visibility, price, play/download counts, Cloudinary IDs</div></div>
+      <div class="db-card"><div class="db-card-num">05</div><div class="db-card-name">favourites</div><div class="db-card-desc">User ↔ audio, with optional label</div></div>
+      <div class="db-card"><div class="db-card-num">06</div><div class="db-card-name">history</div><div class="db-card-desc">30-day rolling listen history, deduped</div></div>
+      <div class="db-card"><div class="db-card-num">07</div><div class="db-card-name">user_payment_info</div><div class="db-card-desc">Legacy single-method (backward compat)</div></div>
+      <div class="db-card"><div class="db-card-num">08</div><div class="db-card-name">user_payment_methods</div><div class="db-card-desc">Multi-method: bKash, PayPal, crypto, etc.</div></div>
+      <div class="db-card"><div class="db-card-num">09</div><div class="db-card-name">purchases</div><div class="db-card-desc">Financial records, ON DELETE SET NULL</div></div>
+      <div class="db-card"><div class="db-card-num">10</div><div class="db-card-name">audio_access_log</div><div class="db-card-desc">Stream/download/preview log, 90-day auto-clean</div></div>
+      <div class="db-card"><div class="db-card-num">11</div><div class="db-card-name">notifications</div><div class="db-card-desc">In-app alerts, typed, read/unread state</div></div>
+      <div class="db-card"><div class="db-card-num">12</div><div class="db-card-name">reports</div><div class="db-card-desc">Content reports with reason, status</div></div>
+      <div class="db-card"><div class="db-card-num">13</div><div class="db-card-name">audio_comments</div><div class="db-card-desc">Threaded comments with like_count</div></div>
+      <div class="db-card"><div class="db-card-num">14</div><div class="db-card-name">comment_likes</div><div class="db-card-desc">User ↔ comment like join table</div></div>
+      <div class="db-card"><div class="db-card-num">15–16</div><div class="db-card-name">support_tickets</div><div class="db-card-desc">TKT-XXXX numbered tickets with status</div></div>
+      <div class="db-card"><div class="db-card-num">17–18</div><div class="db-card-name">support_replies</div><div class="db-card-desc">Full threaded conversation, user + admin</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- TECH STACK -->
 <section class="section">
   <div class="container">
     <div class="sec-tag">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
       Tech Stack
     </div>
-    <h2 class="sec-h2">Built with <span class="grad">modern tech</span></h2>
-    <p class="sec-p">Production-grade tools chosen for speed, security, and reliability at scale.</p>
-    <div class="tech-grid">
-      <div class="tech-card"><span class="tech-dot" style="background:#68a063"></span><div><div class="tech-info-name">Node.js</div><div class="tech-info-role">Backend Runtime</div></div></div>
-      <div class="tech-card"><span class="tech-dot" style="background:#f6c90e"></span><div><div class="tech-info-name">Express.js</div><div class="tech-info-role">Web Framework</div></div></div>
-      <div class="tech-card"><span class="tech-dot" style="background:#336791"></span><div><div class="tech-info-name">PostgreSQL</div><div class="tech-info-role">Database</div></div></div>
-      <div class="tech-card"><span class="tech-dot" style="background:#3448c5"></span><div><div class="tech-info-name">Cloudinary</div><div class="tech-info-role">Media Storage</div></div></div>
-      <div class="tech-card"><span class="tech-dot" style="background:#ff6c2f"></span><div><div class="tech-info-name">Railway</div><div class="tech-info-role">Cloud Hosting</div></div></div>
-      <div class="tech-card"><span class="tech-dot" style="background:#7c3aed"></span><div><div class="tech-info-name">JWT</div><div class="tech-info-role">Auth Sessions</div></div></div>
-      <div class="tech-card"><span class="tech-dot" style="background:#a78bfa"></span><div><div class="tech-info-name">Web Audio API</div><div class="tech-info-role">EQ · Mixer</div></div></div>
-      <div class="tech-card"><span class="tech-dot" style="background:#34d399"></span><div><div class="tech-info-name">Service Worker</div><div class="tech-info-role">PWA · Offline</div></div></div>
-      <div class="tech-card"><span class="tech-dot" style="background:#f59e0b"></span><div><div class="tech-info-name">Helmet + CORS</div><div class="tech-info-role">Security</div></div></div>
-      <div class="tech-card"><span class="tech-dot" style="background:#ef4444"></span><div><div class="tech-info-name">Resend</div><div class="tech-info-role">Email Service</div></div></div>
+    <h2 class="sec-h2">Built with <span class="grad">production-grade tools</span></h2>
+    <p class="sec-p">Every tool chosen for speed, security, and reliability at scale. Deployed on Railway with cluster mode for multi-worker scaling.</p>
+
+    <div class="list-grid">
+      <div class="list-card"><span class="list-dot" style="background:#68a063"></span><div><div class="list-name">Node.js</div><div class="list-role">Backend Runtime</div></div></div>
+      <div class="list-card"><span class="list-dot" style="background:#f6c90e"></span><div><div class="list-name">Express.js</div><div class="list-role">Web Framework</div></div></div>
+      <div class="list-card"><span class="list-dot" style="background:#336791"></span><div><div class="list-name">PostgreSQL</div><div class="list-role">Primary Database</div></div></div>
+      <div class="list-card"><span class="list-dot" style="background:#3448c5"></span><div><div class="list-name">Cloudinary</div><div class="list-role">Audio · Images · Avatars</div></div></div>
+      <div class="list-card"><span class="list-dot" style="background:#ff6c2f"></span><div><div class="list-name">Railway</div><div class="list-role">Deployment + Cluster</div></div></div>
+      <div class="list-card"><span class="list-dot" style="background:#7c3aed"></span><div><div class="list-name">JWT</div><div class="list-role">Auth Sessions (7-day)</div></div></div>
+      <div class="list-card"><span class="list-dot" style="background:#a78bfa"></span><div><div class="list-name">Web Audio API</div><div class="list-role">EQ · Mixer · Analyzer</div></div></div>
+      <div class="list-card"><span class="list-dot" style="background:#34d399"></span><div><div class="list-name">Service Worker</div><div class="list-role">PWA · Offline Cache</div></div></div>
+      <div class="list-card"><span class="list-dot" style="background:#f59e0b"></span><div><div class="list-name">Helmet + CORS</div><div class="list-role">Security Headers</div></div></div>
+      <div class="list-card"><span class="list-dot" style="background:#ef4444"></span><div><div class="list-name">Resend</div><div class="list-role">Transactional Email</div></div></div>
+      <div class="list-card"><span class="list-dot" style="background:#60a5fa"></span><div><div class="list-name">bcryptjs</div><div class="list-role">Password Hashing</div></div></div>
+      <div class="list-card"><span class="list-dot" style="background:#4ade80"></span><div><div class="list-name">pg_trgm</div><div class="list-role">Fuzzy Search · GIN Index</div></div></div>
+      <div class="list-card"><span class="list-dot" style="background:#fb923c"></span><div><div class="list-name">Multer + sharp</div><div class="list-role">File Upload · Processing</div></div></div>
+      <div class="list-card"><span class="list-dot" style="background:#c026d3"></span><div><div class="list-name">Google OAuth 2.0</div><div class="list-role">Social Login</div></div></div>
+      <div class="list-card"><span class="list-dot" style="background:#94a3b8"></span><div><div class="list-name">compression</div><div class="list-role">GZIP / Brotli</div></div></div>
+      <div class="list-card"><span class="list-dot" style="background:#fbbf24"></span><div><div class="list-name">express-rate-limit</div><div class="list-role">DDoS / Brute Force</div></div></div>
     </div>
   </div>
 </section>
 
 <div class="divider"></div>
 
-<!-- ══ CTA BANNER ══ -->
+<!-- EMAIL SYSTEM -->
+<section class="section">
+  <div class="container">
+    <div class="sec-tag">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      Email System
+    </div>
+    <h2 class="sec-h2">8 branded <span class="grad">email templates</span></h2>
+    <p class="sec-p">All emails use a custom dark-theme HTML template with the app logo. Sent via Resend API — fire-and-forget, non-blocking.</p>
+
+    <div class="list-grid">
+      <div class="list-card"><span class="list-dot" style="background:#a78bfa"></span><div><div class="list-name">OTP Password Reset</div><div class="list-role">6-digit code, 30-min expiry</div></div></div>
+      <div class="list-card"><span class="list-dot" style="background:#fbbf24"></span><div><div class="list-name">Payment Submitted</div><div class="list-role">To uploader — action required</div></div></div>
+      <div class="list-card"><span class="list-dot" style="background:#34d399"></span><div><div class="list-name">Payment Approved</div><div class="list-role">To buyer — download unlocked</div></div></div>
+      <div class="list-card"><span class="list-dot" style="background:#f87171"></span><div><div class="list-name">Payment Rejected</div><div class="list-role">To buyer — re-submit prompt</div></div></div>
+      <div class="list-card"><span class="list-dot" style="background:#7c3aed"></span><div><div class="list-name">Support Ticket Created</div><div class="list-role">To admin — new ticket alert</div></div></div>
+      <div class="list-card"><span class="list-dot" style="background:#34d399"></span><div><div class="list-name">Admin Replied to Ticket</div><div class="list-role">To user — support response</div></div></div>
+      <div class="list-card"><span class="list-dot" style="background:#fbbf24"></span><div><div class="list-name">User Replied to Ticket</div><div class="list-role">To admin — conversation update</div></div></div>
+      <div class="list-card"><span class="list-dot" style="background:#f87171"></span><div><div class="list-name">Content Report</div><div class="list-role">To admin — flagged track alert</div></div></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SECURITY -->
+<section class="section">
+  <div class="container">
+    <div class="sec-tag">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Security
+    </div>
+    <h2 class="sec-h2">Secure <span class="grad">by default</span></h2>
+    <p class="sec-p">Security is not an afterthought — it is baked into every layer of the stack.</p>
+
+    <div class="bento">
+      <div class="bento-card">
+        <div class="bc-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <div class="bc-title">Helmet — Full CSP</div>
+        <div class="bc-desc">Content Security Policy with strict allowlists for scripts, styles, fonts, images, and media. frameAncestors 'none', objectSrc 'none'. Manual Permissions-Policy header for camera, mic, geolocation.</div>
+        <span class="bc-tag bc-tag-green">XSS Protection</span>
+      </div>
+      <div class="bento-card">
+        <div class="bc-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <div class="bc-title">httpOnly JWT Cookies</div>
+        <div class="bc-desc">Tokens stored in httpOnly, Secure, SameSite=None cookies — not accessible via JavaScript. Both cookie and Bearer header supported for flexibility.</div>
+        <span class="bc-tag">CSRF Safe</span>
+      </div>
+      <div class="bento-card">
+        <div class="bc-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <div class="bc-title">Tiered Rate Limiting</div>
+        <div class="bc-desc">Different rate limits per endpoint. Auth endpoints are stricter. Uses standardHeaders (RateLimit-*) for transparent client communication.</div>
+        <span class="bc-tag bc-tag-yellow">Brute Force Guard</span>
+      </div>
+      <div class="bento-card">
+        <div class="bc-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div>
+        <div class="bc-title">Input Validation &amp; Sanitization</div>
+        <div class="bc-desc">All inputs trimmed, sliced to max length, and type-checked before DB queries. Parameterized queries everywhere — zero raw string interpolation. Email, password, and name format validated on every route.</div>
+        <span class="bc-tag bc-tag-green">SQL Injection Proof</span>
+      </div>
+      <div class="bento-card">
+        <div class="bc-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+        <div class="bc-title">Per-Track Access Control</div>
+        <div class="bc-desc">Public, paid, and private visibility enforced server-side on every audio endpoint. Paid audio_url is NULL in all list responses until purchase is completed. Private tracks blocked for everyone except owner and admin.</div>
+        <span class="bc-tag">Zero URL Leaks</span>
+      </div>
+      <div class="bento-card">
+        <div class="bc-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <div class="bc-title">bcrypt + Timing-Safe Login</div>
+        <div class="bc-desc">Passwords hashed with bcrypt (cost 10). Login always runs bcrypt even for non-existent users — prevents timing-based user enumeration. OTP response always identical regardless of email existence.</div>
+        <span class="bc-tag">Anti-Enumeration</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PERFORMANCE -->
+<section class="section">
+  <div class="container">
+    <div class="sec-tag">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      Performance
+    </div>
+    <h2 class="sec-h2">Fast by design, <span class="grad">at every layer</span></h2>
+    <p class="sec-p">From database indexes to browser cache headers — every decision optimized for speed.</p>
+
+    <div class="list-grid">
+      <div class="list-card"><span class="list-dot" style="background:#34d399"></span><div><div class="list-name">GZIP / Brotli Compression</div><div class="list-role">All responses &gt;1 KB (audio streams excluded)</div></div></div>
+      <div class="list-card"><span class="list-dot" style="background:#a78bfa"></span><div><div class="list-name">stale-while-revalidate</div><div class="list-role">Audio list: 30s fresh, 5min stale-ok</div></div></div>
+      <div class="list-card"><span class="list-dot" style="background:#fbbf24"></span><div><div class="list-name">In-Memory File Cache</div><div class="list-role">HTML/JS served from memory with ETag, never re-read from disk</div></div></div>
+      <div class="list-card"><span class="list-dot" style="background:#60a5fa"></span><div><div class="list-name">GIN Trigram Index</div><div class="list-role">Fuzzy search on title + artist via pg_trgm</div></div></div>
+      <div class="list-card"><span class="list-dot" style="background:#f97316"></span><div><div class="list-name">Cluster Mode</div><div class="list-role">Multi-worker scaling on Railway with cluster.js</div></div></div>
+      <div class="list-card"><span class="list-dot" style="background:#34d399"></span><div><div class="list-name">Service Worker Cache</div><div class="list-role">App shell cached for instant startup offline</div></div></div>
+      <div class="list-card"><span class="list-dot" style="background:#c026d3"></span><div><div class="list-name">Dynamic ENV Injection</div><div class="list-role">APP_URL / APP_NAME injected at serve time, cached in memory</div></div></div>
+      <div class="list-card"><span class="list-dot" style="background:#94a3b8"></span><div><div class="list-name">30s Request Timeout</div><div class="list-role">Prevents slow DB queries from holding connections</div></div></div>
+      <div class="list-card"><span class="list-dot" style="background:#7c3aed"></span><div><div class="list-name">Immutable Font Cache</div><div class="list-role">Fonts + lucide.min.js: max-age=1yr immutable</div></div></div>
+      <div class="list-card"><span class="list-dot" style="background:#fbbf24"></span><div><div class="list-name">Non-Blocking Side Effects</div><div class="list-role">play_count, access_log, emails — fire-and-forget, response not delayed</div></div></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CTA BANNER -->
 <section class="section">
   <div class="container">
     <div class="cta-banner">
-      <h2>Ready to <span class="grad">start listening?</span></h2>
-      <p>Join ZenticMusic for free. Stream, buy, sell and manage audio from any device — browser or app.</p>
+      <h2>Ready to explore <span class="grad">ZenticMusic?</span></h2>
+      <p>A complete, production-ready audio platform — open the live app, create an account, and experience everything for yourself.</p>
       <div class="cta-banner-btns">
         <a class="btn-primary" href="https://zenticmusic.up.railway.app/auth" target="_blank" rel="noopener">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
@@ -662,7 +697,7 @@ nav{
   </div>
 </section>
 
-<!-- ══ FOOTER ══ -->
+<!-- FOOTER -->
 <footer class="site-footer">
   <div class="footer-inner">
     <a class="footer-logo" href="https://zenticmusic.up.railway.app/" target="_blank" rel="noopener">
@@ -670,17 +705,18 @@ nav{
       <span class="footer-logo-name">Zentic<span>Music</span></span>
     </a>
     <div class="footer-links">
-      <a href="https://zenticmusic.up.railway.app/" target="_blank" rel="noopener">Live Site</a>
+      <a href="https://zenticmusic.up.railway.app/" target="_blank" rel="noopener">Live App</a>
       <a href="https://zenticmusic.up.railway.app/auth" target="_blank" rel="noopener">Sign Up</a>
+      <a href="https://zenticmusic.up.railway.app/terms" target="_blank" rel="noopener">Terms</a>
     </div>
-    <p class="footer-copy">© 2024 ZenticMusic. All rights reserved.</p>
+    <p class="footer-copy">© 2025 ZenticMusic. All rights reserved.</p>
   </div>
 </footer>
 
 </div><!-- /page -->
 
 <script>
-  // Animate elements on scroll
+  // Animate on scroll
   const io = new IntersectionObserver(entries => {
     entries.forEach(e => {
       if (e.isIntersecting) {
@@ -688,12 +724,14 @@ nav{
         e.target.style.transform = 'translateY(0)';
       }
     });
-  }, { threshold: 0.08 });
+  }, { threshold: 0.06 });
 
-  document.querySelectorAll('.bento-card, .tech-card, .pay-card, .cat-chip').forEach(el => {
+  document.querySelectorAll(
+    '.bento-card, .list-card, .pay-card, .cat-chip, .db-card'
+  ).forEach(el => {
     el.style.opacity = '0';
-    el.style.transform = 'translateY(18px)';
-    el.style.transition = 'opacity .5s ease, transform .5s ease';
+    el.style.transform = 'translateY(16px)';
+    el.style.transition = 'opacity .45s ease, transform .45s ease';
     io.observe(el);
   });
 </script>
